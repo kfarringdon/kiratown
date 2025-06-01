@@ -2,8 +2,8 @@
 
 import Image from "next/image"
 import { FormEventHandler, useEffect, useState } from "react"
-const secretWord = "train"
-const maxGuesses = 3
+const secretWord = "TRAIN"
+const maxGuesses = 6
 
 export default function Home() {
   const [guesses, setGuesses] = useState<string[]>([])
@@ -23,42 +23,53 @@ export default function Home() {
       return
     }
 
-    setGuesses(guesses.concat([guess]))
+    const upperGuess = guess.toUpperCase()
+
+    setGuesses(guesses.concat([upperGuess]))
   }
 
   return (
     <div className="p-5">
       <h1 className="text-xl">Wordle</h1>
-      <p> Status {status ? "You Win" : lost ? "Game Over" : "Keep Trying"}</p>
+      <p>Status {status ? "You Win" : lost ? "Game Over" : "Keep Trying"}</p>
+      <p>You Have {maxGuesses - guesses.length} Guesses Left</p>
 
       <form action={submit}>
         <input name="guess" className="border mb-2" />
       </form>
 
-      {guesses.map((value) => (
-        <Guess title={value} key={value} />
+      {guesses.map((word) => (
+        <Guess word={word} key={word} />
       ))}
     </div>
   )
 }
 
-function Guess(props: { title: string }) {
+function Guess({ word }: { word: string }) {
   return (
     <div className="border p-5 mb-5">
-      <h3 className="text-lg text-pink-500"> {props.title}</h3>
+      <Letter letter={word[0]} index={0} />
+      <Letter letter={word[1]} index={1} />
+      <Letter letter={word[2]} index={2} />
+      <Letter letter={word[3]} index={3} />
+      <Letter letter={word[4]} index={4} />
     </div>
   )
 }
 
-function About(props: { face: string }) {
-  return <h2>Hi {props.face} </h2>
-}
+function Letter(props: { letter: string; index: number }) {
+  const yellow = secretWord.includes(props.letter)
+  const green = secretWord[props.index] == props.letter
 
-function Times(props: { amount: number }) {
-  const x = props.amount * 5
-  return <div>a {x}</div>
-}
+  const colour = green
+    ? "bg-green-400"
+    : yellow
+      ? "bg-yellow-300"
+      : "bg-gray-300"
 
-// function fullname(first: string, last: string) {
-//   return first + " " + last
-// }
+  return (
+    <div className={"inline-block w-11 text-center py-3 mr-2 " + colour}>
+      {props.letter}
+    </div>
+  )
+}
