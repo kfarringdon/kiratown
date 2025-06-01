@@ -34,7 +34,24 @@ export default function Wordle() {
   return (
     <div className="p-1 max-w-md border-pink-600 border-3 flex-1 align-center flex flex-col">
       <h1 className="text-xl text-center">Wordle #{getTodaysWord() + 1}</h1>
+
       <p className="text-center">
+        You Have {maxGuesses - guesses.length} Guesses Left
+      </p>
+
+      <form action={submit} className="text-center mt-2">
+        <input
+          name="guess"
+          className="border mb-2 inline text-lg"
+          autoComplete="off"
+        />
+      </form>
+
+      {guesses.map((word) => (
+        <Guess word={word} key={word} />
+      ))}
+
+      <p className="text-center my-2">
         {status
           ? "You Win"
           : lost
@@ -43,17 +60,10 @@ export default function Wordle() {
               ? "Take a guess"
               : "Keep Trying"}
       </p>
-      <p className="text-center">
-        You Have {maxGuesses - guesses.length} Guesses Left
-      </p>
 
-      <form action={submit} className="text-center">
-        <input name="guess" className="border mb-2 inline" autoComplete="off" />
-      </form>
-
-      {guesses.map((word) => (
-        <Guess word={word} key={word} />
-      ))}
+      <div className="bg-green-400"></div>
+      <div className=" bg-yellow-300"></div>
+      <div className=" bg-gray-300"></div>
     </div>
   )
 }
@@ -84,7 +94,7 @@ function Letter(props: { letter: string; index: number }) {
   return (
     <div
       className={
-        "inline-block sm:h-11 sm:w-11 w-8 h-8 text-center py-3 leading-1.5 sm:leading-5 " +
+        "font-bold inline-block sm:h-11 sm:w-11 w-8 h-8 text-center py-3 leading-1.5 sm:leading-5 text-black " +
         colour
       }
     >
