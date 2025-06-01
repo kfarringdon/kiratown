@@ -39,7 +39,7 @@ export default function RootLayout({
             <Link href="/wordle">Wordle</Link>
           </div>
         </nav>
-        <div className="p-8 flex justify-center">{children}</div>
+        <div className=" my-8 px-4 flex justify-center w-full">{children}</div>
       </body>
     </html>
   )

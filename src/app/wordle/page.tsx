@@ -2,8 +2,10 @@
 
 import Image from "next/image"
 import { FormEventHandler, useEffect, useState } from "react"
-import { getTodaysWord } from "./words"
-const secretWord = getTodaysWord().toUpperCase()
+import { wordList } from "./words"
+import { getTodaysWord } from "./utils"
+
+const secretWord = wordList[getTodaysWord()].toUpperCase()
 const maxGuesses = 6
 
 export default function Wordle() {
@@ -30,13 +32,23 @@ export default function Wordle() {
   }
 
   return (
-    <div className="p-5 max-w-3xl border-pink-600 border-3 flex-1">
-      <h1 className="text-xl">Wordle</h1>
-      <p>Status {status ? "You Win" : lost ? "Game Over" : "Keep Trying"}</p>
-      <p>You Have {maxGuesses - guesses.length} Guesses Left</p>
+    <div className="p-1 max-w-md border-pink-600 border-3 flex-1 align-center flex flex-col">
+      <h1 className="text-xl text-center">Wordle #{getTodaysWord() + 1}</h1>
+      <p className="text-center">
+        {status
+          ? "You Win"
+          : lost
+            ? "Game Over"
+            : guesses.length == 0
+              ? "Take a guess"
+              : "Keep Trying"}
+      </p>
+      <p className="text-center">
+        You Have {maxGuesses - guesses.length} Guesses Left
+      </p>
 
-      <form action={submit}>
-        <input name="guess" className="border mb-2" autoComplete="off" />
+      <form action={submit} className="text-center">
+        <input name="guess" className="border mb-2 inline" autoComplete="off" />
       </form>
 
       {guesses.map((word) => (
@@ -48,7 +60,7 @@ export default function Wordle() {
 
 function Guess({ word }: { word: string }) {
   return (
-    <div className="border p-5 mb-5">
+    <div className=" p-2 mb-2 flex justify-center space-x-1">
       <Letter letter={word[0]} index={0} />
       <Letter letter={word[1]} index={1} />
       <Letter letter={word[2]} index={2} />
@@ -70,7 +82,12 @@ function Letter(props: { letter: string; index: number }) {
       : "bg-gray-300"
 
   return (
-    <div className={"inline-block w-11 text-center py-3 mr-2 " + colour}>
+    <div
+      className={
+        "inline-block sm:h-11 sm:w-11 w-8 h-8 text-center py-3 leading-1.5 sm:leading-5 " +
+        colour
+      }
+    >
       {props.letter}
     </div>
   )
