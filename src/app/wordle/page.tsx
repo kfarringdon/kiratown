@@ -61,7 +61,7 @@ export default function Wordle() {
               : "Keep Trying"}
       </p>
 
-      <div className="bg-green-400"></div>
+      <div className="bg-green-300"></div>
       <div className=" bg-yellow-300"></div>
       <div className=" bg-gray-300"></div>
     </div>
@@ -69,33 +69,72 @@ export default function Wordle() {
 }
 
 function Guess({ word }: { word: string }) {
+  const colours = ["gray", "gray", "gray", "gray", "gray", "gray"]
+  const usedChars = [false, false, false, false, false, false]
+
+  const secret = Array.from(secretWord)
+
+  // The greens
+  for (let i = 0; i < word.length; i++) {
+    const isGreen = word[i] == secretWord[i]
+    if (isGreen) {
+      colours[i] = "green"
+      usedChars[i] = true
+    }
+  }
+
+  // the yellows
+  for (let i = 0; i < word.length; i++) {
+    // get the i'th letter from guess word
+    const letter = word[i]
+
+    // find which position it is in the secret word. -1 if not present at all
+    const secretPosition = secret.findIndex((l) => l == letter)
+
+    // if the word is present (not -1 but is 0,1,2 ... or something)
+    if (secretPosition !== -1) {
+      // then check if it's been used already
+      const used = usedChars[secretPosition]
+
+      // if it hasn't
+      if (!used) {
+        // set it to yellow
+        colours[i] = "yellow"
+        // and mark as used
+        usedChars[secretPosition] = true
+      }
+    }
+  }
+
   return (
     <div className=" p-2 mb-2 flex justify-center space-x-1">
-      <Letter letter={word[0]} index={0} />
-      <Letter letter={word[1]} index={1} />
-      <Letter letter={word[2]} index={2} />
-      <Letter letter={word[3]} index={3} />
-      <Letter letter={word[4]} index={4} />
-      <Letter letter={word[5]} index={5} />
+      <Letter letter={word[0]} index={0} colour={colours[0]} />
+      <Letter letter={word[1]} index={1} colour={colours[1]} />
+      <Letter letter={word[2]} index={2} colour={colours[2]} />
+      <Letter letter={word[3]} index={3} colour={colours[3]} />
+      <Letter letter={word[4]} index={4} colour={colours[4]} />
+      <Letter letter={word[5]} index={5} colour={colours[5]} />
     </div>
   )
 }
 
-function Letter(props: { letter: string; index: number }) {
-  const yellow = secretWord.includes(props.letter)
-  const green = secretWord[props.index] == props.letter
+function Letter(props: { letter: string; index: number; colour: string }) {
+  // const yellow = secretWord.includes(props.letter)
+  // const green = secretWord[props.index] == props.letter
 
-  const colour = green
-    ? "bg-green-400"
-    : yellow
-      ? "bg-yellow-300"
-      : "bg-gray-300"
+  // const colour = green
+  //   ? "bg-green-400"
+  //   : yellow
+  //     ? "bg-yellow-300"
+  //     : "bg-gray-300"
+
+  const styleColour = "bg-" + props.colour + "-300"
 
   return (
     <div
       className={
         "font-bold inline-block sm:h-11 sm:w-11 w-8 h-8 text-center py-3 leading-1.5 sm:leading-5 text-black " +
-        colour
+        styleColour
       }
     >
       {props.letter}
