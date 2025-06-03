@@ -73,12 +73,14 @@ function Guess({ word }: { word: string }) {
 
   return (
     <div className=" p-2 mb-2 flex justify-center space-x-1">
-      <Letter letter={word[0]} index={0} colour={colours[0]} />
-      <Letter letter={word[1]} index={1} colour={colours[1]} />
-      <Letter letter={word[2]} index={2} colour={colours[2]} />
-      <Letter letter={word[3]} index={3} colour={colours[3]} />
-      <Letter letter={word[4]} index={4} colour={colours[4]} />
-      <Letter letter={word[5]} index={5} colour={colours[5]} />
+      {colours.map((colour, index) => (
+        <Letter
+          letter={word[index]}
+          index={index}
+          colour={colour}
+          key={index}
+        />
+      ))}
     </div>
   )
 }
