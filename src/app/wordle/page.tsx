@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { FormEventHandler, useEffect, useState } from "react"
 import { wordList } from "./words"
-import { getTodaysWord } from "./utils"
+import { getGuessColours, getTodaysWord } from "./utils"
 
 const secretWord = wordList[getTodaysWord()].toUpperCase()
 const maxGuesses = 6
@@ -69,42 +69,7 @@ export default function Wordle() {
 }
 
 function Guess({ word }: { word: string }) {
-  const colours = ["gray", "gray", "gray", "gray", "gray", "gray"]
-  const usedChars = [false, false, false, false, false, false]
-
-  const secret = Array.from(secretWord)
-
-  // The greens
-  for (let i = 0; i < word.length; i++) {
-    const isGreen = word[i] == secretWord[i]
-    if (isGreen) {
-      colours[i] = "green"
-      usedChars[i] = true
-    }
-  }
-
-  // the yellows
-  for (let i = 0; i < word.length; i++) {
-    // get the i'th letter from guess word
-    const letter = word[i]
-
-    // find which position it is in the secret word. -1 if not present at all
-    const secretPosition = secret.findIndex((l) => l == letter)
-
-    // if the word is present (not -1 but is 0,1,2 ... or something)
-    if (secretPosition !== -1) {
-      // then check if it's been used already
-      const used = usedChars[secretPosition]
-
-      // if it hasn't
-      if (!used) {
-        // set it to yellow
-        colours[i] = "yellow"
-        // and mark as used
-        usedChars[secretPosition] = true
-      }
-    }
-  }
+  const colours = getGuessColours(word, secretWord)
 
   return (
     <div className=" p-2 mb-2 flex justify-center space-x-1">
