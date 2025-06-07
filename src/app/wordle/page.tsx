@@ -4,6 +4,7 @@ import Image from "next/image"
 import { FormEventHandler, useEffect, useState } from "react"
 import { wordList } from "./words"
 import { getGuessColours, getTodaysWord } from "./utils"
+import { dictionary } from "./dictionary"
 
 const secretWord = wordList[getTodaysWord()].toUpperCase()
 const maxGuesses = 6
@@ -23,6 +24,11 @@ export default function Wordle() {
 
     if (lost) {
       alert("No more guesses left!")
+      return
+    }
+
+    if (!dictionary.includes(guess.toLowerCase())) {
+      alert("Not in word list")
       return
     }
 
