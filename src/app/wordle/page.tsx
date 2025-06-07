@@ -5,6 +5,7 @@ import { FormEventHandler, useEffect, useState } from "react"
 import { wordList } from "./words"
 import { getGuessColours, getTodaysWord } from "./utils"
 import { dictionary } from "./dictionary"
+import { Keyboard } from "./keyboard"
 
 const secretWord = wordList[getTodaysWord()].toUpperCase()
 const maxGuesses = 6
@@ -28,7 +29,7 @@ export default function Wordle() {
     }
 
     if (!dictionary.includes(guess.toLowerCase())) {
-      alert("Not in word list")
+      alert(guess + " is not in word list")
       return
     }
 
@@ -67,7 +68,10 @@ export default function Wordle() {
               : "Keep Trying"}
       </p>
 
-      <div className="bg-green-300"></div>
+      <Keyboard guesses={guesses} secretWord={secretWord} />
+
+      {/* ignore these */}
+      <div className="bg-green-300 opacity-40 line-through bold"></div>
       <div className=" bg-yellow-300"></div>
       <div className=" bg-gray-300"></div>
     </div>
