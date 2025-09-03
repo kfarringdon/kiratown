@@ -12,12 +12,11 @@ const maxGuesses = 6
 
 export default function Wordle() {
   const [guesses, setGuesses] = useState<string[]>([])
+  const [currentGuess, setCurrentGuess] = useState<string>("")
   const status = secretWord == guesses[guesses.length - 1]
   const lost = guesses.length >= maxGuesses
 
-  function submit(formData: FormData) {
-    const guess = formData.get("guess") as string
-
+  function submitGuess(guess: string) {
     if (guess.length != 6) {
       alert("Guess must contain 6 letters")
       return
@@ -34,8 +33,27 @@ export default function Wordle() {
     }
 
     const upperGuess = guess.toUpperCase()
-
     setGuesses(guesses.concat([upperGuess]))
+    setCurrentGuess("")
+  }
+
+  function submit(formData: FormData) {
+    const guess = formData.get("guess") as string
+    submitGuess(guess)
+  }
+
+  function handleKeyPress(letter: string) {
+    if (currentGuess.length < 6) {
+      setCurrentGuess(currentGuess + letter.toUpperCase())
+    }
+  }
+
+  function handleBackspace() {
+    setCurrentGuess(currentGuess.slice(0, -1))
+  }
+
+  function handleEnter() {
+    submitGuess(currentGuess)
   }
 
   return (
@@ -49,8 +67,11 @@ export default function Wordle() {
       <form action={submit} className="text-center mt-2">
         <input
           name="guess"
+          value={currentGuess}
+          onChange={(e) => setCurrentGuess(e.target.value.toUpperCase())}
           className="border mb-2 inline text-lg"
           autoComplete="off"
+          maxLength={6}
         />
       </form>
 
@@ -68,7 +89,13 @@ export default function Wordle() {
               : "Keep Trying"}
       </p>
 
-      <Keyboard guesses={guesses} secretWord={secretWord} />
+      <Keyboard 
+        guesses={guesses} 
+        secretWord={secretWord}
+        onKeyPress={handleKeyPress}
+        onBackspace={handleBackspace}
+        onEnter={handleEnter}
+      />
 
       {/* ignore these */}
       <div className="bg-green-300 opacity-40 line-through bold"></div>

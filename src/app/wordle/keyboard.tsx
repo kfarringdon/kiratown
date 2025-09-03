@@ -45,27 +45,48 @@ function isLetterUsable(
 export function Keyboard({
   guesses,
   secretWord,
+  onKeyPress,
+  onBackspace,
+  onEnter,
 }: {
   guesses: string[]
   secretWord: string
+  onKeyPress: (letter: string) => void
+  onBackspace: () => void
+  onEnter: () => void
 }) {
   return (
     <div className="text-center">
       {qwertyAlphabet.map((l) => (
         <>
-          <div
+          <button
+            key={l}
+            onClick={() => onKeyPress(l)}
             className={
-              "w-6 h-6 text-sm bg-gray-900 inline-block text-white font-bold " +
+              "w-6 h-6 text-sm bg-gray-900 inline-block text-white font-bold cursor-pointer hover:bg-gray-700 " +
               (isLetterUsable(guesses, l, secretWord)
                 ? ""
                 : "opacity-40 line-through")
             }
           >
             {l}
-          </div>
+          </button>
           {(l == "p" || l == "l") && <br />}
         </>
       ))}
+      <br />
+      <button
+        onClick={onBackspace}
+        className="w-16 h-6 text-sm bg-red-600 text-white font-bold cursor-pointer hover:bg-red-500 mr-2"
+      >
+        ⌫
+      </button>
+      <button
+        onClick={onEnter}
+        className="w-16 h-6 text-sm bg-green-600 text-white font-bold cursor-pointer hover:bg-green-500"
+      >
+        ENTER
+      </button>
     </div>
   )
 }
