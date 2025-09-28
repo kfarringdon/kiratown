@@ -1,3 +1,5 @@
+import { Fragment } from "react"
+
 const qwertyAlphabet = [
   "q",
   "w",
@@ -58,9 +60,8 @@ export function Keyboard({
   return (
     <div className="text-center">
       {qwertyAlphabet.map((l) => (
-        <>
+        <Fragment key={l}>
           <button
-            key={l}
             onClick={() => onKeyPress(l)}
             className={
               "w-6 h-6 text-sm bg-gray-900 inline-block text-white font-bold cursor-pointer hover:bg-gray-700 " +
@@ -72,7 +73,7 @@ export function Keyboard({
             {l}
           </button>
           {(l == "p" || l == "l") && <br />}
-        </>
+        </Fragment>
       ))}
       <br />
       <button
