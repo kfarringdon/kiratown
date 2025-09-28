@@ -37,6 +37,7 @@ export default function RootLayout({
           </Link>
           <div className="space-x-4">
             <Link href="/wordle">Wordle</Link>
+            <Link href="/bookshelf">Bookshelf</Link>
           </div>
         </nav>
         <div className=" my-8 px-4 flex justify-center w-full">{children}</div>
