@@ -5,12 +5,6 @@ import BookshelfView, {
 } from "@/components/bookshelf/bookshelf-view"
 import { createClient } from "@/utils/supabase/server"
 
-type PageProps = {
-  params: {
-    user_id: string
-  }
-}
-
 const formatUserHeading = (userId: string) => {
   if (userId.length <= 12) {
     return userId
@@ -18,10 +12,34 @@ const formatUserHeading = (userId: string) => {
   return `${userId.slice(0, 8)}...${userId.slice(-4)}`
 }
 
-export default async function UserBookshelfPage({ params }: PageProps) {
-  const { user_id: userId } = params
+type RouteParams = {
+  params: Promise<{
+    user_id: string
+  }>
+}
 
-  const cookieStore = cookies()
+type RawBook = {
+  id: number | null
+  title: string | null
+  author: string | null
+  genre: string | null
+  year: number | null
+}
+
+type RawUserBookRow = {
+  id: number | null
+  created_at: string | null
+  rating: number | null
+  owned: boolean | null
+  read_at: string | null
+  book_id: number | null
+  book: RawBook | RawBook[] | null
+}
+
+export default async function UserBookshelfPage({ params }: RouteParams) {
+  const { user_id: userId } = await params
+
+  const cookieStore = await cookies()
   const supabase = createClient(cookieStore)
 
   const { data, error } = await supabase
@@ -32,7 +50,27 @@ export default async function UserBookshelfPage({ params }: PageProps) {
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
 
-  const entries = (data ?? []) as BookshelfEntry[]
+  const entries: BookshelfEntry[] = ((data ?? []) as RawUserBookRow[]).map((row) => {
+    const relatedBook = Array.isArray(row.book) ? row.book[0] ?? null : row.book
+
+    return {
+      id: row.id ?? 0,
+      created_at: row.created_at ?? "",
+      rating: row.rating ?? null,
+      owned: Boolean(row.owned),
+      read_at: row.read_at ?? null,
+      book_id: row.book_id ?? 0,
+      book: relatedBook
+        ? {
+            id: relatedBook.id ?? 0,
+            title: relatedBook.title ?? "",
+            author: relatedBook.author ?? "",
+            genre: relatedBook.genre ?? null,
+            year: relatedBook.year ?? null,
+          }
+        : null,
+    }
+  })
   const displayName = formatUserHeading(userId)
 
   return (

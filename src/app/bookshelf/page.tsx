@@ -31,6 +31,24 @@ type BookSuggestion = {
   year: number | null
 }
 
+type RawBook = {
+  id: number | null
+  title: string | null
+  author: string | null
+  genre: string | null
+  year: number | null
+}
+
+type RawUserBookRow = {
+  id: number | null
+  created_at: string | null
+  rating: number | null
+  owned: boolean | null
+  read_at: string | null
+  book_id: number | null
+  book: RawBook | RawBook[] | null
+}
+
 export default function BookshelfPage() {
   const supabase = useMemo(() => createClient(), [])
   const [mode, setMode] = useState<AuthMode>("sign-in")
@@ -101,7 +119,29 @@ export default function BookshelfPage() {
       setBooksError(error.message)
       setUserBooks([])
     } else {
-      setUserBooks((data ?? []) as BookshelfEntry[])
+      const normalizedEntries = ((data ?? []) as RawUserBookRow[]).map((row) => {
+        const relatedBook = Array.isArray(row.book) ? row.book[0] ?? null : row.book
+
+        return {
+          id: row.id ?? 0,
+          created_at: row.created_at ?? "",
+          rating: row.rating ?? null,
+          owned: Boolean(row.owned),
+          read_at: row.read_at ?? null,
+          book_id: row.book_id ?? 0,
+          book: relatedBook
+            ? {
+                id: relatedBook.id ?? 0,
+                title: relatedBook.title ?? "",
+                author: relatedBook.author ?? "",
+                genre: relatedBook.genre ?? null,
+                year: relatedBook.year ?? null,
+              }
+            : null,
+        } satisfies BookshelfEntry
+      })
+
+      setUserBooks(normalizedEntries)
     }
     setBooksLoading(false)
   }, [supabase, user])
@@ -304,7 +344,7 @@ export default function BookshelfPage() {
     await loadUserBooks()
   }
 
-  const openEditModal = (entry: UserBookEntry) => {
+  const openEditModal = (entry: BookshelfEntry) => {
     setEditingEntry(entry)
     const displayRating = normalizeRating(entry.rating)
     setEditRating(displayRating !== null ? displayRating.toString() : "")
