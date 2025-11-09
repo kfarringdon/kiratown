@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import Link from "next/link"
+import { Weather } from "@/components/weather"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,16 +29,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <nav className="p-4 border-b flex align-center text-2xl">
-          {" "}
-          <Link href="/">
-            <h1 className="mr-6 font-black text-pink-600 hover:text-green-400">
-              Kira.town
-            </h1>
-          </Link>
-          <div className="space-x-4">
-            <Link href="/wordle">Wordle</Link>
-            <Link href="/bookshelf">Bookshelf</Link>
+        <nav className="p-4 border-b flex align-center justify-between text-2xl">
+          <div className="flex items-center">
+            <Link href="/">
+              <h1 className="mr-6 font-black text-pink-600 hover:text-green-400">
+                Kira.town
+              </h1>
+            </Link>
+            <div className="space-x-4">
+              <Link href="/wordle">Wordle</Link>
+              <Link href="/bookshelf">Bookshelf</Link>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <Weather />
           </div>
         </nav>
         <div className=" my-8 px-4 flex justify-center w-full">{children}</div>
