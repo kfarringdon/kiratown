@@ -42,6 +42,14 @@ export default async function UserBookshelfPage({ params }: RouteParams) {
   const cookieStore = await cookies()
   const supabase = createClient(cookieStore)
 
+  const { data: profileData } = await supabase
+    .from("profile")
+    .select("fullname")
+    .eq("id", userId)
+    .maybeSingle()
+
+  const profileName = profileData?.fullname?.trim() || null
+
   const { data, error } = await supabase
     .from("user_book")
     .select(
@@ -71,7 +79,7 @@ export default async function UserBookshelfPage({ params }: RouteParams) {
         : null,
     }
   })
-  const displayName = formatUserHeading(userId)
+  const displayName = profileName ?? formatUserHeading(userId)
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">

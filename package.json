@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "supabase-types": "supabase gen types typescript --project-id jxgjammecijroymqwbsm > src/utils/supabase/database.types.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
@@ -24,6 +25,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "prettier": "3.5.3",
+    "supabase": "^2.58.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

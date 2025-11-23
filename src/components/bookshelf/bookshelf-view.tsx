@@ -1,5 +1,7 @@
 "use client"
 
+import type { ReactNode } from "react"
+
 import { RatingStars, normalizeRating } from "./rating"
 
 export type BookshelfEntry = {
@@ -27,6 +29,7 @@ type BookshelfViewProps = {
   onEditEntry?: (entry: BookshelfEntry) => void
   emptyMessage?: string
   title?: string
+  actions?: ReactNode
 }
 
 const defaultEmptyMessage = "No books yet."
@@ -41,6 +44,7 @@ export default function BookshelfView({
   onEditEntry,
   emptyMessage = defaultEmptyMessage,
   title = defaultTitle,
+  actions,
 }: BookshelfViewProps) {
   const showRefresh = Boolean(onRefresh)
 
@@ -48,16 +52,19 @@ export default function BookshelfView({
     <section className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">{title}</h2>
-        {showRefresh && (
-          <button
-            type="button"
-            onClick={() => onRefresh?.()}
-            className="text-sm text-pink-600 hover:underline"
-            disabled={loading}
-          >
-            Refresh
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {actions}
+          {showRefresh && (
+            <button
+              type="button"
+              onClick={() => onRefresh?.()}
+              className="text-sm text-pink-600 hover:underline"
+              disabled={loading}
+            >
+              Refresh
+            </button>
+          )}
+        </div>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

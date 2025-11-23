@@ -1,5 +1,13 @@
-import BookshelfApp from "@/components/bookshelf/bookshelf-app"
+import BookshelfLayout from "@/components/bookshelf/bookshelf-layout"
+import { BookshelfProvider } from "@/components/bookshelf/bookshelf-context"
+import ProfileTab from "@/components/bookshelf/profile-tab"
 
 export default function ProfilePage() {
-  return <BookshelfApp activeTab="profile" />
+  return (
+    <BookshelfProvider>
+      <BookshelfLayout activeTab="profile">
+        <ProfileTab />
+      </BookshelfLayout>
+    </BookshelfProvider>
+  )
 }

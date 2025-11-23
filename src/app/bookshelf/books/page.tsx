@@ -1,5 +1,13 @@
-import BookshelfApp from "@/components/bookshelf/bookshelf-app"
+import BookshelfLayout from "@/components/bookshelf/bookshelf-layout"
+import { BookshelfProvider } from "@/components/bookshelf/bookshelf-context"
+import BooksTab from "@/components/bookshelf/books-tab"
 
 export default function BooksTabPage() {
-  return <BookshelfApp activeTab="books" />
+  return (
+    <BookshelfProvider>
+      <BookshelfLayout activeTab="books">
+        <BooksTab />
+      </BookshelfLayout>
+    </BookshelfProvider>
+  )
 }

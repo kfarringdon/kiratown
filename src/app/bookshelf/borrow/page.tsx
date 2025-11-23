@@ -1,12 +1,12 @@
 import BookshelfLayout from "@/components/bookshelf/bookshelf-layout"
 import { BookshelfProvider } from "@/components/bookshelf/bookshelf-context"
-import AddTab from "@/components/bookshelf/add-tab"
+import BorrowTab from "@/components/bookshelf/borrow-tab"
 
-export default function AddBookPage() {
+export default function BorrowPage() {
   return (
     <BookshelfProvider>
-      <BookshelfLayout activeTab="books">
-        <AddTab />
+      <BookshelfLayout activeTab="borrow">
+        <BorrowTab />
       </BookshelfLayout>
     </BookshelfProvider>
   )
