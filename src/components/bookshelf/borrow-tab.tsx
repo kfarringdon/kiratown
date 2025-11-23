@@ -32,6 +32,7 @@ type BorrowEntry = {
     imageUrl: string | null
   }
   ownerCount: number
+  lastAdded: Date
 }
 
 export default function BorrowTab() {
@@ -61,10 +62,10 @@ export default function BorrowTab() {
 
     const grouped = new Map<
       number,
-      { book: BorrowEntry["book"]; ownerIds: Set<string> }
+      { book: BorrowEntry["book"]; ownerIds: Set<string>; lastAdded: Date }
     >()
 
-    for (const row of (data ?? []) as BorrowQueryRow[]) {
+    for (const row of data) {
       if (!row.book_id || !row.book) continue
 
       const bookRecord = Array.isArray(row.book)
@@ -86,6 +87,7 @@ export default function BorrowTab() {
             imageUrl: bookRecord.image_url ?? null,
           },
           ownerIds: row.user_id ? new Set([row.user_id]) : new Set(),
+          lastAdded: new Date(row.created_at),
         })
       }
       if (grouped.size >= 25) break
@@ -94,6 +96,7 @@ export default function BorrowTab() {
     const mapped: BorrowEntry[] = Array.from(grouped.values()).map((entry) => ({
       book: entry.book,
       ownerCount: entry.ownerIds.size,
+      lastAdded: entry.lastAdded,
     }))
 
     setEntries(mapped)
@@ -135,24 +138,21 @@ export default function BorrowTab() {
       ) : (
         <ul className="grid gap-4 md:grid-cols-2">
           {entries.map((entry) => (
-            <Link
-              href={`/bookshelf/book/${entry.book.id}`}
-              // className="mt-4 inline-flex justify-center rounded-md border border-pink-200 px-3 py-2 text-sm font-semibold text-pink-600 hover:bg-pink-50"
-            >
-              <li
-                key={entry.book.id}
-                className="rounded-md border border-gray-200 p-4 shadow-sm"
-              >
+            <Link href={`/bookshelf/book/${entry.book.id}`} key={entry.book.id}>
+              <li className="rounded-md border border-gray-200 p-4 shadow-sm">
                 <h3 className="text-lg font-semibold">{entry.book.title}</h3>
                 <p className="text-sm text-gray-600">
                   {entry.book.author
                     ? `by ${entry.book.author}`
                     : "Author unknown"}
                 </p>
-                <p className="mt-2 text-sm text-gray-700">
+                <p className="mt-2 text-xs text-gray-500">
                   Owned by{" "}
                   <span className="font-semibold">{entry.ownerCount}</span>{" "}
                   {entry.ownerCount === 1 ? "person" : "people"}
+                </p>
+                <p className="mt-2 text-xs text-gray-500">
+                  Last added {entry.lastAdded.toISOString().slice(0, 10)}
                 </p>
               </li>
             </Link>
