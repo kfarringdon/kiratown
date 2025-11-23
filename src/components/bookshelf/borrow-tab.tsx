@@ -67,7 +67,9 @@ export default function BorrowTab() {
     for (const row of (data ?? []) as BorrowQueryRow[]) {
       if (!row.book_id || !row.book) continue
 
-      const bookRecord = Array.isArray(row.book) ? row.book[0] ?? null : row.book
+      const bookRecord = Array.isArray(row.book)
+        ? (row.book[0] ?? null)
+        : row.book
       if (!bookRecord) continue
 
       const existing = grouped.get(row.book_id)
@@ -109,7 +111,7 @@ export default function BorrowTab() {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Borrowed favorites</h2>
+        <h2 className="text-xl font-semibold">New books</h2>
         <button
           type="button"
           onClick={fetchBorrowEntries}
@@ -119,6 +121,10 @@ export default function BorrowTab() {
           Refresh
         </button>
       </div>
+      <p className="text-gray-500">
+        These are books people have recently listed on their shelves.
+      </p>
+
       {error && <p className="text-sm text-red-600">{error}</p>}
       {loading ? (
         <p className="text-sm text-gray-500">Loading recent books…</p>
@@ -129,28 +135,27 @@ export default function BorrowTab() {
       ) : (
         <ul className="grid gap-4 md:grid-cols-2">
           {entries.map((entry) => (
-            <li
-              key={entry.book.id}
-              className="rounded-md border border-gray-200 p-4 shadow-sm"
+            <Link
+              href={`/bookshelf/book/${entry.book.id}`}
+              // className="mt-4 inline-flex justify-center rounded-md border border-pink-200 px-3 py-2 text-sm font-semibold text-pink-600 hover:bg-pink-50"
             >
-              <h3 className="text-lg font-semibold">{entry.book.title}</h3>
-              <p className="text-sm text-gray-600">
-                {entry.book.author
-                  ? `by ${entry.book.author}`
-                  : "Author unknown"}
-              </p>
-              <p className="mt-2 text-sm text-gray-700">
-                Owned by{" "}
-                <span className="font-semibold">{entry.ownerCount}</span>{" "}
-                {entry.ownerCount === 1 ? "person" : "people"}
-              </p>
-              <Link
-                href={`/bookshelf/book/${entry.book.id}`}
-                className="mt-4 inline-flex justify-center rounded-md border border-pink-200 px-3 py-2 text-sm font-semibold text-pink-600 hover:bg-pink-50"
+              <li
+                key={entry.book.id}
+                className="rounded-md border border-gray-200 p-4 shadow-sm"
               >
-                View borrowers
-              </Link>
-            </li>
+                <h3 className="text-lg font-semibold">{entry.book.title}</h3>
+                <p className="text-sm text-gray-600">
+                  {entry.book.author
+                    ? `by ${entry.book.author}`
+                    : "Author unknown"}
+                </p>
+                <p className="mt-2 text-sm text-gray-700">
+                  Owned by{" "}
+                  <span className="font-semibold">{entry.ownerCount}</span>{" "}
+                  {entry.ownerCount === 1 ? "person" : "people"}
+                </p>
+              </li>
+            </Link>
           ))}
         </ul>
       )}
