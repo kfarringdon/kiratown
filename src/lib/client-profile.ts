@@ -36,7 +36,7 @@ export const getOrCreateProfile = async (): Promise<Profile> => {
       ? (user.user_metadata.full_name as string)
       : null
 
-  const defaultFullName = metadataName?.trim() || user.email || null
+  const defaultFullName = metadataName?.trim() || user.email || undefined
 
   const { data: insertedProfile, error: insertError } = await supabase
     .from("profile")

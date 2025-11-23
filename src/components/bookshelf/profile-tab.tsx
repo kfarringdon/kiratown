@@ -138,7 +138,7 @@ export default function ProfileTab() {
     const trimmedName = profileFullName.trim()
     const { error } = await supabase.from("profile").upsert({
       id: user.id,
-      fullname: trimmedName || null,
+      fullname: trimmedName || undefined,
     })
 
     if (error) {
